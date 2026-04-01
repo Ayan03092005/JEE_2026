@@ -352,7 +352,7 @@ function calculateAndShowResults() {
   const pct = ((totalScore / CONFIG.TOTAL_MARKS) * 100).toFixed(1);
   let grade = totalScore >= 288 ? "🏆 Outstanding" : totalScore >= 216 ? "🥇 Excellent" : totalScore >= 144 ? "📚 Good" : "💪 Keep Practicing";
   document.getElementById('result-percentile').textContent = `${pct}% — ${grade}`;
-  document.getElementById('result-badge').textContent = grade.split(' ')[1];
+  document.getElementById('result-rank-badge').textContent = grade.split(' ')[1];
   
   const subNames = ['phy','chem','math'];
   const subLabels = ['Physics','Chemistry','Mathematics'];
