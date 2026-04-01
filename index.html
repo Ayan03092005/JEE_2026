@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JEE 2026 — Mock Test Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ══════════════ LANDING SCREEN ══════════════ -->
+<div id="screen-landing" class="screen active">
+  <div class="landing-bg">
+    <div class="grid-overlay"></div>
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+  </div>
+  <div class="landing-content">
+    <div class="badge">JEE ADVANCED & MAINS 2026</div>
+    <h1 class="landing-title">
+      <span class="title-line">MOCK</span>
+      <span class="title-line accent">TEST</span>
+      <span class="title-line">PORTAL</span>
+    </h1>
+    <p class="landing-sub">90 Questions · 3 Hours · Full Syllabus Coverage<br>Physics · Chemistry · Mathematics</p>
+    <div class="exam-meta">
+      <div class="meta-chip"><span class="chip-icon">⚛</span> Physics — 30 Qs</div>
+      <div class="meta-chip"><span class="chip-icon">⚗</span> Chemistry — 30 Qs</div>
+      <div class="meta-chip"><span class="chip-icon">∑</span> Mathematics — 30 Qs</div>
+    </div>
+    <div class="marking-info">
+      <div class="mark-item correct">+4 for correct</div>
+      <div class="mark-item wrong">−1 for wrong</div>
+      <div class="mark-item skip">0 for skipped</div>
+    </div>
+    <div class="name-entry">
+      <input type="text" id="student-name" placeholder="Enter your full name" maxlength="60">
+      <input type="email" id="student-email" placeholder="Your email (optional — for your records)">
+    </div>
+    <button class="btn-start" onclick="startExam()">
+      <span>BEGIN EXAM</span>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+    <p class="disclaimer">Best viewed on desktop. Timer runs once started.</p>
+  </div>
+</div>
+
+<!-- ══════════════ EXAM SCREEN ══════════════ -->
+<div id="screen-exam" class="screen">
+  <header class="exam-header">
+    <div class="header-left">
+      <div class="exam-logo">JEE<span>2026</span></div>
+      <div class="student-name-display" id="header-name"></div>
+    </div>
+    <div class="header-center">
+      <div class="subject-tabs">
+        <button class="stab active" onclick="switchSubject(0)" id="stab-0">⚛ Physics</button>
+        <button class="stab" onclick="switchSubject(1)" id="stab-1">⚗ Chemistry</button>
+        <button class="stab" onclick="switchSubject(2)" id="stab-2">∑ Math</button>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="timer-block">
+        <div class="timer-label">TIME LEFT</div>
+        <div class="timer" id="timer">03:00:00</div>
+      </div>
+      <button class="btn-submit-exam" onclick="confirmSubmit()">SUBMIT</button>
+    </div>
+  </header>
+
+  <div class="exam-body">
+    <!-- Question Panel -->
+    <div class="question-panel">
+      <div class="q-meta">
+        <span class="q-subject-tag" id="q-subject-tag">Physics</span>
+        <span class="q-number" id="q-number">Q1 of 30</span>
+        <span class="q-topic" id="q-topic"></span>
+      </div>
+      <div class="q-text" id="q-text"></div>
+      <div class="options-grid" id="options-grid"></div>
+      <div class="q-navigation">
+        <button class="btn-nav" onclick="prevQuestion()">← Prev</button>
+        <button class="btn-mark" onclick="markForReview()">★ Mark for Review</button>
+        <button class="btn-clear" onclick="clearResponse()">✕ Clear</button>
+        <button class="btn-nav primary" onclick="nextQuestion()">Next →</button>
+      </div>
+    </div>
+
+    <!-- Question Palette -->
+    <div class="palette-panel">
+      <div class="palette-header">Question Palette</div>
+      <div class="palette-legend">
+        <span class="leg answered">●</span> Answered
+        <span class="leg marked">●</span> Marked
+        <span class="leg visited">●</span> Visited
+        <span class="leg not-visited">●</span> Not Visited
+      </div>
+      <div class="palette-grid" id="palette-grid"></div>
+      <div class="palette-score-preview">
+        <div class="score-preview-title">SCORE PREVIEW</div>
+        <div class="score-row"><span>Attempted</span><span id="prev-attempted">0</span></div>
+        <div class="score-row"><span>Marked</span><span id="prev-marked">0</span></div>
+        <div class="score-row"><span>Remaining</span><span id="prev-remaining">90</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ RESULT SCREEN ══════════════ -->
+<div id="screen-result" class="screen">
+  <div class="result-bg">
+    <div class="orb orb1"></div>
+    <div class="orb orb3"></div>
+  </div>
+  <div class="result-container">
+    <div class="result-header">
+      <div class="result-badge" id="result-rank-badge">RESULT</div>
+      <h2 class="result-name" id="result-name">Student</h2>
+      <div class="result-score-big" id="result-score-big">0 / 360</div>
+      <div class="result-percentile" id="result-percentile"></div>
+    </div>
+
+    <div class="result-cards">
+      <div class="res-card physics">
+        <div class="res-card-label">⚛ PHYSICS</div>
+        <div class="res-card-score" id="res-phy-score">0/120</div>
+        <div class="res-card-detail" id="res-phy-detail"></div>
+      </div>
+      <div class="res-card chemistry">
+        <div class="res-card-label">⚗ CHEMISTRY</div>
+        <div class="res-card-score" id="res-chem-score">0/120</div>
+        <div class="res-card-detail" id="res-chem-detail"></div>
+      </div>
+      <div class="res-card math">
+        <div class="res-card-label">∑ MATHEMATICS</div>
+        <div class="res-card-score" id="res-math-score">0/120</div>
+        <div class="res-card-detail" id="res-math-detail"></div>
+      </div>
+    </div>
+
+    <div class="email-section">
+      <h3>📧 Email Report</h3>
+      <p>Report will be sent to the configured admin email automatically. Enter your email below to also receive a copy.</p>
+      <div class="email-row">
+        <input type="email" id="report-email" placeholder="your@email.com">
+        <button class="btn-email" onclick="sendEmailReport()">Send Report</button>
+      </div>
+      <div class="email-status" id="email-status"></div>
+    </div>
+
+    <div class="solutions-section">
+      <h3>📋 Detailed Solutions</h3>
+      <div class="filter-tabs">
+        <button class="ftab active" onclick="filterSolutions('all')">All</button>
+        <button class="ftab" onclick="filterSolutions('correct')">✓ Correct</button>
+        <button class="ftab" onclick="filterSolutions('wrong')">✗ Wrong</button>
+        <button class="ftab" onclick="filterSolutions('skipped')">— Skipped</button>
+        <button class="ftab" onclick="filterSolutions('physics')">⚛ Physics</button>
+        <button class="ftab" onclick="filterSolutions('chemistry')">⚗ Chemistry</button>
+        <button class="ftab" onclick="filterSolutions('math')">∑ Math</button>
+      </div>
+      <div class="solutions-list" id="solutions-list"></div>
+    </div>
+
+    <button class="btn-retake" onclick="retakeExam()">↺ Retake Exam</button>
+  </div>
+</div>
+
+<!-- ══════════════ CONFIRM MODAL ══════════════ -->
+<div id="submit-modal" class="modal-overlay" style="display:none">
+  <div class="modal-box">
+    <h3>Submit Exam?</h3>
+    <div class="modal-stats" id="modal-stats"></div>
+    <p>Once submitted, you cannot change your answers.</p>
+    <div class="modal-btns">
+      <button onclick="closeModal()" class="btn-cancel">Cancel</button>
+      <button onclick="submitExam()" class="btn-confirm">Submit Now</button>
+    </div>
+  </div>
+</div>
+
+<script src="questions.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
